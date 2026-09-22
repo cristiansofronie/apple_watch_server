@@ -4,13 +4,10 @@ import { execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const app = express();
 const port = 80;
 
-app.use("/public/audio", express.static(path.join(__dirname, "public", "audio")));
+app.use("/public/audio", express.static(join("public", "audio")));
 
 app.get('/run', (req, res) => {
   execFile('/usr/bin/uptime', (error, stdout, stderr) => {
@@ -29,7 +26,7 @@ app.get('/run', (req, res) => {
 
 app.get('/random_article', (req, res) => {
   try {
-    const files = fs.readdirSync(join(__dirname, 'resources', 'articles'));
+    const files = fs.readdirSync(join('resources', 'articles'));
 
     if (files.length === 0) {
       throw new Error('No articles found');
@@ -38,7 +35,7 @@ app.get('/random_article', (req, res) => {
     const n = Math.floor(Math.random() * files.length);
 
     const content = fs.readFileSync(
-      join(__dirname, 'resources', 'articles', files[n]),
+      join('resources', 'articles', files[n]),
       'utf8',
     );
 

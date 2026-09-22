@@ -1,4 +1,5 @@
 import express from 'express';
+import https from 'node:https';
 import fs from 'node:fs';
 import { execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -7,7 +8,19 @@ import { dirname, join } from 'node:path';
 const app = express();
 const port = 80;
 
-app.use("/public/audio", express.static(join("public", "audio")));
+const server = https.createServer(
+  {
+    key: fs.readFileSync(
+      '/etc/letsencrypt/live/cristiansofronie.com/privkey.pem',
+    ),
+    cert: fs.readFileSync(
+      '/etc/letsencrypt/live/cristiansofronie.com/fullchain.pem',
+    ),
+  },
+  app,
+);
+
+app.use('/public/audio', express.static(join('public', 'audio')));
 
 app.get('/run', (req, res) => {
   execFile('/usr/bin/uptime', (error, stdout, stderr) => {
@@ -62,6 +75,10 @@ app.get('/random_article', (req, res) => {
 //   }
 // });
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Listening on http://0.0.0.0:${port}`);
+// app.listen(port, '0.0.0.0', () => {
+//   console.log(`Listening on http://0.0.0.0:${port}`);
+// });
+
+app.listen(443, () => {
+  console.log(`Listening on port 443`);
 });

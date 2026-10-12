@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { execFile } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { WebSocketServer } from 'ws';
 
 const app = express();
 const port = 80;
@@ -19,6 +20,24 @@ const server = https.createServer(
   },
   app,
 );
+
+const wss = new WebSocketServer({
+  server,
+  path: '/ws',
+});
+
+wss.on("connection", (ws) => {
+  console.log("WebSocket connected");
+
+  ws.on("message", (message) => {
+    console.log("Received:", message.toString());
+    ws.send("Message received");
+  });
+
+  ws.on("close", () => {
+    console.log("WebSocket disconnected");
+  });
+});
 
 app.use('/public/audio', express.static(join('public', 'audio')));
 

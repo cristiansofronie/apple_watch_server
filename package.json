@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/cristiansofronie/apple_watch_server#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "ws": "^8.22.0"
   }
 }

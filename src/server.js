@@ -8,24 +8,6 @@ import { WebSocketServer } from 'ws';
 
 const app = express();
 
-const wss = new WebSocketServer({
-  server,
-  path: '/ws',
-});
-
-wss.on("connection", (ws) => {
-  console.log("WebSocket connected");
-
-  ws.on("message", (message) => {
-    console.log("Received:", message.toString());
-    ws.send("Message received");
-  });
-
-  ws.on("close", () => {
-    console.log("WebSocket disconnected");
-  });
-});
-
 app.use('/public/audio', express.static(join('public', 'audio')));
 
 app.get('/run', (req, res) => {
@@ -97,4 +79,22 @@ const server = https.createServer(
   app
 ).listen(443, () => {
   console.log(`Listening on port 443`);
+});
+
+const wss = new WebSocketServer({
+  server,
+  path: '/ws',
+});
+
+wss.on("connection", (ws) => {
+  console.log("WebSocket connected");
+
+  ws.on("message", (message) => {
+    console.log("Received:", message.toString());
+    ws.send("Message received");
+  });
+
+  ws.on("close", () => {
+    console.log("WebSocket disconnected");
+  });
 });

@@ -7,19 +7,6 @@ import { dirname, join } from 'node:path';
 import { WebSocketServer } from 'ws';
 
 const app = express();
-const port = 80;
-
-const server = https.createServer(
-  {
-    key: fs.readFileSync(
-      '/etc/letsencrypt/live/cristiansofronie.com/privkey.pem',
-    ),
-    cert: fs.readFileSync(
-      '/etc/letsencrypt/live/cristiansofronie.com/fullchain.pem',
-    ),
-  },
-  app,
-);
 
 const wss = new WebSocketServer({
   server,
@@ -98,6 +85,16 @@ app.get('/random_article', (req, res) => {
 //   console.log(`Listening on http://0.0.0.0:${port}`);
 // });
 
-app.listen(443, () => {
+const server = https.createServer(
+  {
+    key: fs.readFileSync(
+      '/etc/letsencrypt/live/cristiansofronie.com/privkey.pem',
+    ),
+    cert: fs.readFileSync(
+      '/etc/letsencrypt/live/cristiansofronie.com/fullchain.pem',
+    ),
+  },
+  app
+).listen(443, () => {
   console.log(`Listening on port 443`);
 });
